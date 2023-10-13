@@ -1,12 +1,30 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import CartItems from "./CartItems"
 import Items from "./Items"
 import data from "./data"
 
 function App() {
-  const [items, setItems] = useState(data)
-  const [total, setTotal] = useState(0)
-  const [length, setLength] = useState(0)
+  const [items, setItems] = useState(() => {
+    let products = localStorage.getItem("Items")
+    if (products == null) return data
+    return JSON.parse(products)
+  })
+  const [total, setTotal] = useState(() => {
+    let tot = localStorage.getItem("Total")
+    if (tot == null) return 0
+    return JSON.parse(tot)
+  })
+  const [length, setLength] = useState(() => {
+    let len = localStorage.getItem("Length")
+    if (len == null) return 0
+    return JSON.parse(len)
+  })
+
+  useEffect(() => {
+    localStorage.setItem("Items", JSON.stringify(items))
+    localStorage.setItem("Total", JSON.stringify(total))
+    localStorage.setItem("Length", JSON.stringify(length))
+  }, [items, total, length])
 
   const calcTotal = () => {
     let newTotal = items.reduce((acc, cur) => {
